@@ -1,0 +1,105 @@
+{
+    "0xa4c138b3073fd57a": {
+        "occupancy": false,
+        "tamper": false,
+        "battery_low": false,
+        "battery": 100,
+        "voltage": 3000,
+        "linkquality": 168
+    },
+    "0xa4c138077b1f9823": {
+        "battery": 100,
+        "occupancy": false,
+        "tamper": false,
+        "battery_low": false,
+        "voltage": 3000,
+        "linkquality": 32
+    },
+    "0xa4c138fad35f10d2": {
+        "battery": 100,
+        "occupancy": false,
+        "tamper": false,
+        "battery_low": false,
+        "voltage": 3000,
+        "linkquality": 168
+    },
+    "0xa4c138d88daec860": {
+        "volume": "medium",
+        "battpercentage": 100,
+        "melody": 3,
+        "linkquality": 168,
+        "alarm": false
+    },
+    "0xa4c138c2f6cc5e9f": {
+        "voltage": 2900,
+        "battery": 100,
+        "contact": false,
+        "tamper": false,
+        "battery_low": false,
+        "linkquality": 116
+    },
+    "0x00158d008bef244f": {
+        "state": "LOCK",
+        "lock_state": "locked",
+        "linkquality": 12,
+        "auto_relock_time": 3600,
+        "sound_volume": "low_volume"
+    },
+    "0xa4c13885247efc8f": {
+        "voltage": 2900,
+        "battery": 100,
+        "contact": false,
+        "tamper": false,
+        "battery_low": false,
+        "linkquality": 84
+    },
+    "0xf0fd45fffef5f765": {
+        "battery": 100,
+        "voltage": 1500,
+        "linkquality": 88,
+        "learned_ir_code": "CUEM5yVWAvUFAwLgAwHgBw9AAeALE+ADAUAfwANAAUALwAFACwv1BQMC9QUDAvUFAwI="
+    },
+    "0xa4c1385ac481695c": {
+        "contact": false,
+        "tamper": false,
+        "battery_low": false,
+        "linkquality": 40,
+        "voltage": 2800,
+        "battery": 100
+    },
+    "0x8c8b48fffe587802": {
+        "energy": 393.97,
+        "produced_energy": 113.35,
+        "ac_frequency": 60,
+        "power": 213,
+        "power_factor": 29,
+        "update_frequency": 30,
+        "voltage_a": 131.7,
+        "current_a": -2.691,
+        "power_a": -78,
+        "voltage_b": 130.1,
+        "current_b": 2.722,
+        "power_b": 298,
+        "voltage_c": 130.2,
+        "current_c": -0.16,
+        "power_c": -5,
+        "power_factor_a": -22,
+        "power_factor_b": 84,
+        "power_factor_c": -28,
+        "energy_a": 0.6,
+        "energy_produced_a": 92.39,
+        "energy_b": 392.88,
+        "energy_produced_b": 0,
+        "energy_c": 0.49,
+        "energy_produced_c": 20.96,
+        "linkquality": 0
+    },
+    "0xa4c1383f7c0d8f0a": {
+        "battery": 100,
+        "voltage": 2700,
+        "water_leak": false,
+        "tamper": false,
+        "battery_low": false,
+        "linkquality": 168
+    }
+}

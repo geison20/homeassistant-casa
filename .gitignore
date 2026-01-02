@@ -4,12 +4,12 @@
 *
 
 ########################################
-# 🟢 PERMITE DIRETÓRIOS (necessário)
+# 🟢 PERMITE DIRETÓRIOS
 ########################################
 !*/
 
 ########################################
-# 🟢 PERMITE ARQUIVOS DE CONFIG (YAML)
+# 🟢 PERMITE YAML
 ########################################
 !*.yaml
 !*.yml
@@ -21,24 +21,10 @@
 !blueprints/**
 
 ########################################
-# 🟢 PACKAGES (boa prática no HA)
+# 🟢 PACKAGES
 ########################################
 !packages/
 !packages/**
-
-########################################
-# 🟢 CUSTOM COMPONENTS (se existir)
-########################################
-!custom_components/
-!custom_components/**
-
-########################################
-# 🟢 FRONTEND / THEMES (opcional)
-########################################
-!www/
-!www/**
-!themes/
-!themes/**
 
 ########################################
 # 🟢 DOCUMENTAÇÃO
@@ -47,18 +33,31 @@
 !.gitignore
 
 ########################################
-# 🔴 SEMPRE IGNORAR (mesmo se yaml)
+# 🟢 ZIGBEE2MQTT (CONFIG APENAS)
+########################################
+!zigbee2mqtt/
+!zigbee2mqtt/configuration.yaml
+!zigbee2mqtt/state.json
+
+########################################
+# 🔴 ZIGBEE2MQTT (NUNCA VERSIONAR)
+########################################
+zigbee2mqtt/log/
+zigbee2mqtt/database.db
+zigbee2mqtt/coordinator_backup.json
+
+########################################
+# 🔴 HOME ASSISTANT – SEMPRE IGNORAR
 ########################################
 .storage/
 .cloud/
 deps/
 tts/
 backup/
-zigbee2mqtt/data/
 __pycache__/
 
 ########################################
-# 🔴 BANCOS, LOGS, LOCKS
+# 🔴 BANCOS, LOGS, LOCKS (GLOBAL)
 ########################################
 *.db
 *.db-shm
@@ -71,4 +70,3 @@ __pycache__/
 # 🔴 SEGREDOS
 ########################################
 secrets.yaml
-
