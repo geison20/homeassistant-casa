@@ -1,0 +1,402 @@
+- id: '1767017257955'
+  alias: Cozinha - Presença (Meross MS600)
+  description: Liga com ocupação e desliga após 2 minutos sem movimento
+  triggers:
+  - entity_id: binary_sensor.sensor_de_meross_ocupacao
+    to: 'on'
+    trigger: state
+  - entity_id: binary_sensor.sensor_de_meross_ocupacao
+    to: 'off'
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.sensor_de_meross_ocupacao
+        state: 'on'
+      sequence:
+      - target:
+          entity_id: switch.zemismart_wifi_smart_switch
+        action: switch.turn_on
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.sensor_de_meross_ocupacao
+        state: 'off'
+      sequence:
+      - delay:
+          minutes: 2
+      - condition: state
+        entity_id: binary_sensor.sensor_de_meross_ocupacao
+        state: 'off'
+      - target:
+          entity_id: switch.zemismart_wifi_smart_switch
+        action: switch.turn_off
+  mode: restart
+- id: '1767028397721'
+  alias: Escadas - Movimento liga e desliga (2 PIR)
+  description: Liga com movimento em qualquer sensor e desliga após 3 min sem movimento
+    em ambos
+  triggers:
+  - entity_id:
+    - binary_sensor.sensor_escadas_1_occupancy
+    - binary_sensor.sensor_escadas_2_occupancy
+    to: 'on'
+    trigger: state
+  - entity_id:
+    - binary_sensor.sensor_escadas_1_occupancy
+    - binary_sensor.sensor_escadas_2_occupancy
+    to: 'off'
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_1_occupancy
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_2_occupancy
+          state: 'on'
+      sequence:
+      - target:
+          entity_id: switch.zemismart_wifi_smart_switch_switch_2
+        action: switch.turn_on
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_1_occupancy
+          state: 'off'
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_2_occupancy
+          state: 'off'
+      sequence:
+      - delay: 00:03:00
+      - condition: and
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_1_occupancy
+          state: 'off'
+        - condition: state
+          entity_id: binary_sensor.sensor_escadas_2_occupancy
+          state: 'off'
+      - target:
+          entity_id: switch.zemismart_wifi_smart_switch_switch_2
+        action: switch.turn_off
+  mode: restart
+- id: '1767032409624'
+  alias: Sala - Geral controla Painel, Sofá e Cortinas
+  description: Quando ligar ou desligar o geral da sala, controla painel, sofá e cortinas
+  triggers:
+  - entity_id: switch.geral_da_sala_de_estar
+    to: 'on'
+    trigger: state
+  - entity_id: switch.geral_da_sala_de_estar
+    to: 'off'
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.geral_da_sala_de_estar
+        state: 'on'
+      sequence:
+      - target:
+          entity_id:
+          - switch.painel_da_sala_de_estar
+          - switch.sofa_da_sala_de_estar
+          - switch.cortinas_da_sala_de_estar
+        action: switch.turn_on
+    - conditions:
+      - condition: state
+        entity_id: switch.geral_da_sala_de_estar
+        state: 'off'
+      sequence:
+      - target:
+          entity_id:
+          - switch.painel_da_sala_de_estar
+          - switch.sofa_da_sala_de_estar
+          - switch.cortinas_da_sala_de_estar
+        action: switch.turn_off
+        data: {}
+      - action: scene.turn_on
+        metadata: {}
+        target:
+          entity_id: scene.ventilador_desligar
+        data: {}
+  mode: restart
+- id: '1767033346973'
+  alias: Externo - Desligar luzes às 23h (somente se estiver em casa)
+  description: Desliga luzes da frente e lateral às 23h apenas se eu estiver em casa
+  triggers:
+  - at: '23:00:00'
+    trigger: time
+  conditions:
+  - condition: state
+    state:
+    - home
+    entity_id: person.casa_14
+  actions:
+  - target:
+      entity_id:
+      - switch.luz_frente_de_casa
+      - switch.lateral_da_casa
+    action: switch.turn_off
+  mode: single
+- id: '1767034599426'
+  alias: Chuva - Notificar e repetir se houver aberturas abertas
+  description: 'Notifica quando começa a chover e repete a cada 5 min enquanto chover
+    e houver abertura aberta, até confirmar/dispensar.
+
+    '
+  triggers:
+  - entity_id:
+    - binary_sensor.sensor_de_chuva_ocupacao
+    to:
+    - 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10
+    trigger: state
+  conditions: []
+  actions:
+  - target:
+      entity_id: input_boolean.chuva_alerta_confirmado
+    action: input_boolean.turn_off
+    data: {}
+  - target:
+      entity_id: script.notificacao_comecou_a_chover
+    data:
+      variables:
+        alerta: "{{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')\n
+          \  or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}"
+        repeticao: false
+        aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
+          %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
+          {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif j %}\n
+          \ Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else %}\n  \n{%
+          endif %}"
+    action: script.turn_on
+  - repeat:
+      while:
+      - condition: state
+        state:
+        - 'on'
+        entity_id: binary_sensor.sensor_de_chuva_ocupacao
+      - condition: state
+        entity_id: input_boolean.chuva_alerta_confirmado
+        state: 'off'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.janela_quarto_criancas_contact
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.porta_da_sacada_contact
+          state: 'on'
+      sequence:
+      - delay: 00:05:00
+      - condition: state
+        state:
+        - 'on'
+        entity_id: binary_sensor.sensor_de_chuva_ocupacao
+      - condition: state
+        entity_id: input_boolean.chuva_alerta_confirmado
+        state: 'off'
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: binary_sensor.janela_quarto_criancas_contact
+          state: 'on'
+        - condition: state
+          entity_id: binary_sensor.porta_da_sacada_contact
+          state: 'on'
+      - target:
+          entity_id: script.notificacao_comecou_a_chover
+        data:
+          variables:
+            alerta: true
+            repeticao: true
+            aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
+              %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on')
+              %} {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif
+              j %}\n  Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else
+              %}\n  \n{% endif %}"
+        action: script.turn_on
+  mode: restart
+- id: '1767042570608'
+  alias: Chuva - Notificar quando parar
+  description: Envia notificação quando a chuva parar
+  triggers:
+  - entity_id:
+    - binary_sensor.sensor_de_chuva_ocupacao
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    trigger: state
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - target:
+      entity_id: input_boolean.chuva_alerta_confirmado
+    action: input_boolean.turn_off
+    data: {}
+  - target:
+      entity_id: script.notificacao_chuva_parou
+    data:
+      variables:
+        alerta: "{{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')\n
+          \  or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}"
+        aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
+          %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
+          {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif j %}\n
+          \ Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else %}\n  \n{%
+          endif %}"
+    action: script.turn_on
+  mode: single
+- id: '1767043454822'
+  alias: Churrasqueira - Desligar ao parar movimento
+  description: Desliga as luzes da churrasqueira quando não detectar mais movimento
+  triggers:
+  - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_ocupacao
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: switch.luzes_churrasqueira
+    state:
+    - 'on'
+  actions:
+  - action: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.luzes_churrasqueira
+  mode: single
+- id: '1767044460202'
+  alias: Escritório - Ligar ar condicionado (presença + porta fechada)
+  description: 'Liga o ar condicionado a 20 °C somente se houver presença e a porta
+    do escritório estiver fechada
+
+    '
+  triggers:
+  - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
+    to: 'on'
+    trigger: state
+  - entity_id: binary_sensor.sensor_porta_escritorio_contact
+    to: 'off'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
+    state: 'on'
+  - condition: state
+    entity_id: binary_sensor.sensor_porta_escritorio_contact
+    state: 'off'
+  actions:
+  - target:
+      entity_id: climate.ar_condicionado_portatil_escritorio
+    data:
+      hvac_mode: cool
+      temperature: 20
+    action: climate.set_temperature
+  mode: single
+- id: '1767044649808'
+  alias: Escritório - Desligar ar condicionado sem presença
+  description: Desliga o ar condicionado se não detectar presença por 5 minutos no
+    escritório
+  triggers:
+  - entity_id:
+    - binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
+    to:
+    - 'off'
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: climate.ar_condicionado_portatil_escritorio
+    state:
+    - cool
+    enabled: true
+  - condition: state
+    entity_id: switch.ar_condicionado_portatil_escritorio_power
+    state:
+    - 'on'
+  actions:
+  - target:
+      entity_id: climate.ar_condicionado_portatil_escritorio
+    action: climate.turn_off
+  mode: restart
+- id: '1767057340829'
+  alias: Sala - Interruptor do ventilador controla cenas
+  description: Executa cenas ao ligar ou desligar o controlador do ventilador da sala
+  triggers:
+  - entity_id: switch.controlador_ventilador_da_sala
+    to: 'on'
+    trigger: state
+  - entity_id: switch.controlador_ventilador_da_sala
+    to: 'off'
+    trigger: state
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.controlador_ventilador_da_sala
+        state: 'on'
+      sequence:
+      - target:
+          entity_id:
+          - scene.ventilador_3
+          - scene.luz_ventilador
+        action: scene.turn_on
+    - conditions:
+      - condition: state
+        entity_id: switch.controlador_ventilador_da_sala
+        state: 'off'
+      sequence:
+      - target:
+          entity_id: scene.ventilador_desligar
+        action: scene.turn_on
+  mode: single
+- id: '1767059546302'
+  alias: Sala - Sem movimento desliga o geral
+  description: Se não detectar movimento por 5 minutos, desliga o geral da sala (e
+    a automação do geral desliga o resto)
+  triggers:
+  - entity_id: binary_sensor.lnlinkha_e04b4101a27b0000000000009cac0000
+    to: 'off'
+    for: 00:05:00
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: switch.geral_da_sala_de_estar
+    state: 'on'
+  actions:
+  - target:
+      entity_id: switch.geral_da_sala_de_estar
+    action: switch.turn_off
+  mode: restart
+- id: '1767134436970'
+  alias: Churrasqueira - Ligar ao detectar movimento
+  description: Liga as luzes da churrasqueira ao detectar movimento
+  triggers:
+  - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_ocupacao
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: switch.luzes_churrasqueira
+    state: 'off'
+  actions:
+  - action: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.luzes_churrasqueira
+  mode: single
