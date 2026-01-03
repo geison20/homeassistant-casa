@@ -55,8 +55,6 @@ devices:
     friendly_name: sensor-escada-02
   '0xa4c138fad35f10d2':
     friendly_name: sensor-escada-01
-  '0xf0fd45fffef5f765':
-    friendly_name: Sensor de IR
   '0xa4c138d88daec860':
     friendly_name: siren
   '0xa4c138c2f6cc5e9f':
