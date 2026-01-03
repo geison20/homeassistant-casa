@@ -279,10 +279,8 @@
   mode: single
 - id: '1767044460202'
   alias: Escritório - Ligar ar condicionado (presença + porta fechada)
-  description: 'Liga o ar condicionado a 20 °C somente se houver presença e a porta
+  description: Liga o ar condicionado via cena Tuya quando houver presença e a porta
     do escritório estiver fechada
-
-    '
   triggers:
   - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
     to: 'on'
@@ -299,16 +297,13 @@
     state: 'off'
   actions:
   - target:
-      entity_id: climate.ar_condicionado_portatil_escritorio
-    data:
-      hvac_mode: cool
-      temperature: 20
-    action: climate.set_temperature
+      entity_id: scene.ligar_ar_condicionado_midea
+    action: scene.turn_on
   mode: single
 - id: '1767044649808'
   alias: Escritório - Desligar ar condicionado sem presença
-  description: Desliga o ar condicionado se não detectar presença por 5 minutos no
-    escritório
+  description: Desliga o ar condicionado via cena Tuya se não detectar presença por
+    10 minutos no escritório
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
@@ -331,8 +326,8 @@
     - 'on'
   actions:
   - target:
-      entity_id: climate.ar_condicionado_portatil_escritorio
-    action: climate.turn_off
+      entity_id: scene.desligar_ar_condicionado_midea
+    action: scene.turn_on
   mode: restart
 - id: '1767057340829'
   alias: Sala - Interruptor do ventilador controla cenas
