@@ -6,6 +6,33 @@ default_config:
 frontend:
   themes: !include_dir_merge_named themes
 
+template:
+  - binary_sensor:
+      - name: Janelas abertas
+        unique_id: janelas_abertas
+        state: >
+          {{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')
+             or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}
+      - name: Chuva janelas abertas
+        unique_id: chuva_janelas_abertas
+        state: >
+          {{ is_state('binary_sensor.sensor_de_chuva_ocupacao', 'on')
+             and is_state('binary_sensor.janelas_abertas', 'on') }}
+
+alert:
+  chuva_janelas_abertas:
+    name: Chuva com janelas abertas
+    entity_id: binary_sensor.chuva_janelas_abertas
+    state: "on"
+    repeat:
+      - 5
+    can_acknowledge: true
+    skip_first: true
+    notifiers:
+      - notify.notify
+    title: "Chuva em andamento - janelas abertas"
+    message: "Feche as janelas. Vou lembrar a cada 5 minutos enquanto estiver chovendo."
+
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml

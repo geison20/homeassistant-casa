@@ -151,11 +151,10 @@
     action: switch.turn_off
   mode: single
 - id: '1767034599426'
-  alias: Chuva - Notificar e repetir se houver janelas abertas
-  description: Dispara quando começar a chover por 10 s; limpa o alerta confirmado
-    e envia notificação indicando se a janela do quarto das crianças e/ou a janela
-    da sacada estão abertas. Enquanto estiver chovendo, o alerta não for confirmado
-    e houver janelas abertas, repete a notificação a cada 5 minutos
+  alias: Chuva - Notificar quando começar
+  description: Dispara quando começar a chover por 10 s e envia notificação indicando
+    se a janela do quarto das crianças e/ou a janela da sacada estão abertas; os
+    lembretes a cada 5 minutos são feitos pelo alerta de chuva
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_chuva_ocupacao
@@ -169,15 +168,10 @@
   conditions: []
   actions:
   - target:
-      entity_id: input_boolean.chuva_alerta_confirmado
-    action: input_boolean.turn_off
-    data: {}
-  - target:
       entity_id: script.notificacao_comecou_a_chover
     data:
       variables:
-        alerta: "{{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')\n
-          \  or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}"
+        alerta: "{{ is_state('binary_sensor.janelas_abertas', 'on') }}"
         repeticao: false
         aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
           %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
@@ -185,58 +179,11 @@
           \ Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else %}\n  \n{%
           endif %}"
     action: script.turn_on
-  - repeat:
-      while:
-      - condition: state
-        state:
-        - 'on'
-        entity_id: binary_sensor.sensor_de_chuva_ocupacao
-      - condition: state
-        entity_id: input_boolean.chuva_alerta_confirmado
-        state: 'off'
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: binary_sensor.janela_quarto_criancas_contact
-          state: 'on'
-        - condition: state
-          entity_id: binary_sensor.porta_da_sacada_contact
-          state: 'on'
-      sequence:
-      - delay: 00:05:00
-      - condition: state
-        state:
-        - 'on'
-        entity_id: binary_sensor.sensor_de_chuva_ocupacao
-      - condition: state
-        entity_id: input_boolean.chuva_alerta_confirmado
-        state: 'off'
-      - condition: or
-        conditions:
-        - condition: state
-          entity_id: binary_sensor.janela_quarto_criancas_contact
-          state: 'on'
-        - condition: state
-          entity_id: binary_sensor.porta_da_sacada_contact
-          state: 'on'
-      - target:
-          entity_id: script.notificacao_comecou_a_chover
-        data:
-          variables:
-            alerta: true
-            repeticao: true
-            aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
-              %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on')
-              %} {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif
-              j %}\n  Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else
-              %}\n  \n{% endif %}"
-        action: script.turn_on
   mode: restart
 - id: '1767042570608'
   alias: Chuva - Notificar quando parar
-  description: Dispara quando a chuva parar por 1 minuto; limpa o alerta confirmado
-    e envia notificação informando se a janela do quarto das crianças e/ou a janela
-    da sacada estão abertas
+  description: Dispara quando a chuva parar por 1 minuto e envia notificação informando
+    se a janela do quarto das crianças e/ou a janela da sacada estão abertas
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_chuva_ocupacao
@@ -250,15 +197,10 @@
   conditions: []
   actions:
   - target:
-      entity_id: input_boolean.chuva_alerta_confirmado
-    action: input_boolean.turn_off
-    data: {}
-  - target:
       entity_id: script.notificacao_chuva_parou
     data:
       variables:
-        alerta: "{{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')\n
-          \  or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}"
+        alerta: "{{ is_state('binary_sensor.janelas_abertas', 'on') }}"
         aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
           %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
           {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n

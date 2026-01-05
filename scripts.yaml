@@ -2,7 +2,7 @@ confirmable_notification:
   alias: Notificação - Começou a chover
   description: Envia notificação confirmável quando começa a chover, com título e
     mensagem variando conforme alerta e repetição; inclui a lista de janelas; ao
-    confirmar, marca o alerta como confirmado
+    confirmar, reconhece o alerta de chuva
   fields:
     alerta:
       description: true se houver janelas abertas
@@ -32,13 +32,13 @@ confirmable_notification:
       confirm_text: Confirmar
       confirm_action:
       - target:
-          entity_id: input_boolean.chuva_alerta_confirmado
-        action: input_boolean.turn_on
+          entity_id: alert.chuva_janelas_abertas
+        action: alert.turn_off
         data: {}
 notificacao_chuva_parou:
   alias: Notificação - Chuva parou
   description: Envia notificação confirmável quando a chuva parar, com horário e
-    aviso sobre janelas abertas; ao confirmar, limpa o alerta
+    aviso sobre janelas abertas
   fields:
     alerta:
       description: true se houver janelas abertas
@@ -57,9 +57,4 @@ notificacao_chuva_parou:
         > 0 else ''janelas abertas'' }}. {% else %} ✅ Todas as janelas estão fechadas.
         {% endif %}'
       confirm_text: Ok
-      confirm_action:
-      - target:
-          entity_id: input_boolean.chuva_alerta_confirmado
-        action: input_boolean.turn_off
-        data: {}
       dismiss_action: []
