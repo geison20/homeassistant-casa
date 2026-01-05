@@ -1,31 +1,32 @@
 confirmable_notification:
   alias: Notificação - Começou a chover
-  description: Envia notificação confirmável quando começa a chover
+  description: Envia notificação confirmável quando começa a chover, com título e
+    mensagem variando conforme alerta e repetição; inclui a lista de janelas; ao
+    confirmar, marca o alerta como confirmado
   fields:
     alerta:
-      description: true se houver janela ou porta aberta
+      description: true se houver janelas abertas
       example: true
     repeticao:
       description: true se for lembrete
       example: true
     aberturas:
-      description: Lista textual das aberturas abertas
-      example: Janela quarto crianças, Porta sacada
+      description: Lista textual das janelas abertas
+      example: Janela quarto crianças, Janela da sacada
   use_blueprint:
     path: homeassistant/confirmable_notification.yaml
     input:
       notify_device: fe214fad2e404924e2e37f9f48b69d0f
       title: "{% set a = alerta | default(false) %} {% set r = repeticao | default(false)
-        %} {% if not r and a %} \U0001F6A8 Chuva começou — janela ou porta aberta
-        {% elif not r %} \U0001F327️ Chuva começou {% elif r and a %} \U0001F6A8 Chuva
-        em andamento — janela ou porta aberta {% else %} ⏱️ Chuva em andamento {%
-        endif %}"
+        %} {% if not r and a %} \U0001F6A8 Chuva começou — janelas abertas {% elif
+        not r %} \U0001F327️ Chuva começou {% elif r and a %} \U0001F6A8 Chuva em andamento
+        — janelas abertas {% else %} ⏱️ Chuva em andamento {% endif %}"
       message: '{% if repeticao | default(false) %} Lembrete às {{ now().strftime(''%H:%M'')
         }}. {% else %} Detectado em {{ now().strftime(''%d/%m/%Y'') }} às {{ now().strftime(''%H:%M'')
         }}. {% endif %}
 
         {% if alerta | default(false) %} ⚠️ Atenção: {{ aberturas if aberturas|length
-        > 0 else ''há janela ou porta aberta'' }}. Vou continuar avisando a cada 5
+        > 0 else ''há janelas abertas'' }}. Vou continuar avisando a cada 5
         minutos enquanto estiver chovendo, até você confirmar. {% else %} ✅ Tudo fechado
         por enquanto. {% endif %}'
       confirm_text: Confirmar
@@ -36,25 +37,25 @@ confirmable_notification:
         data: {}
 notificacao_chuva_parou:
   alias: Notificação - Chuva parou
-  description: Envia notificação confirmável quando a chuva parar
+  description: Envia notificação confirmável quando a chuva parar, com horário e
+    aviso sobre janelas abertas; ao confirmar, limpa o alerta
   fields:
     alerta:
-      description: true se houver janela ou porta aberta
+      description: true se houver janelas abertas
       example: true
     aberturas:
-      description: Lista textual das aberturas abertas
-      example: Janela quarto crianças, Porta sacada
+      description: Lista textual das janelas abertas
+      example: Janela quarto crianças, Janela da sacada
   use_blueprint:
     path: homeassistant/confirmable_notification.yaml
     input:
       notify_device: fe214fad2e404924e2e37f9f48b69d0f
-      title: "{% if alerta | default(false) %}\n  ⚠️ Chuva parou — janela ou porta
-        aberta\n{% else %}\n  ☀️ Chuva parou\n{% endif %}"
+      title: "{% if alerta | default(false) %}\n  ⚠️ Chuva parou — janelas abertas\n{% else %}\n  ☀️ Chuva parou\n{% endif %}"
       message: 'A chuva parou às {{ now().strftime(''%H:%M'') }}.
 
         {% if alerta | default(false) %} ⚠️ Ainda há {{ aberturas if aberturas|length
-        > 0 else ''janela ou porta aberta'' }}. {% else %} ✅ Todas as janelas e portas
-        estão fechadas. {% endif %}'
+        > 0 else ''janelas abertas'' }}. {% else %} ✅ Todas as janelas estão fechadas.
+        {% endif %}'
       confirm_text: Ok
       confirm_action:
       - target:

@@ -1,6 +1,8 @@
 - id: '1767017257955'
   alias: Cozinha - Presença (Meross MS600)
-  description: Liga com ocupação e desliga após 2 minutos sem movimento
+  description: Dispara quando há presença ou ausência na cozinha; se detectar presença,
+    liga a luz. Se não houver movimento, espera 2 minutos, confirma a ausência e
+    desliga a luz
   triggers:
   - entity_id: binary_sensor.sensor_de_meross_ocupacao
     to: 'on'
@@ -34,8 +36,9 @@
   mode: restart
 - id: '1767028397721'
   alias: Escadas - Movimento liga e desliga (2 PIR)
-  description: Liga com movimento em qualquer sensor e desliga após 3 min sem movimento
-    em ambos
+  description: Dispara quando qualquer sensor PIR detecta movimento; se algum estiver
+    ativo, liga a luz das escadas. Quando ambos ficam sem movimento, espera 3 minutos,
+    confirma ausência nos dois sensores e desliga a luz
   triggers:
   - entity_id:
     - binary_sensor.sensor_escadas_1_occupancy
@@ -87,7 +90,9 @@
   mode: restart
 - id: '1767032409624'
   alias: Sala - Geral controla Painel, Sofá e Cortinas
-  description: Quando ligar ou desligar o geral da sala, controla painel, sofá e cortinas
+  description: Dispara ao ligar ou desligar o geral da sala; ao ligar, ativa painel,
+    sofá e cortinas; ao desligar, desliga os três e também desliga o ventilador via
+    cena
   triggers:
   - entity_id: switch.geral_da_sala_de_estar
     to: 'on'
@@ -128,7 +133,8 @@
   mode: restart
 - id: '1767033346973'
   alias: Externo - Desligar luzes às 23h (somente se estiver em casa)
-  description: Desliga luzes da frente e lateral às 23h apenas se eu estiver em casa
+  description: Dispara às 23:00; só executa se eu estiver em casa; desliga as luzes
+    da frente e da lateral
   triggers:
   - at: '23:00:00'
     trigger: time
@@ -145,11 +151,11 @@
     action: switch.turn_off
   mode: single
 - id: '1767034599426'
-  alias: Chuva - Notificar e repetir se houver aberturas abertas
-  description: 'Notifica quando começa a chover e repete a cada 5 min enquanto chover
-    e houver abertura aberta, até confirmar/dispensar.
-
-    '
+  alias: Chuva - Notificar e repetir se houver janelas abertas
+  description: Dispara quando começar a chover por 10 s; limpa o alerta confirmado
+    e envia notificação indicando se a janela do quarto das crianças e/ou a janela
+    da sacada estão abertas. Enquanto estiver chovendo, o alerta não for confirmado
+    e houver janelas abertas, repete a notificação a cada 5 minutos
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_chuva_ocupacao
@@ -175,8 +181,8 @@
         repeticao: false
         aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
           %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
-          {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif j %}\n
-          \ Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else %}\n  \n{%
+          {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n
+          \ Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else %}\n  \n{%
           endif %}"
     action: script.turn_on
   - repeat:
@@ -221,14 +227,16 @@
             repeticao: true
             aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
               %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on')
-              %} {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif
-              j %}\n  Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else
+              %} {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif
+              j %}\n  Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else
               %}\n  \n{% endif %}"
         action: script.turn_on
   mode: restart
 - id: '1767042570608'
   alias: Chuva - Notificar quando parar
-  description: Envia notificação quando a chuva parar
+  description: Dispara quando a chuva parar por 1 minuto; limpa o alerta confirmado
+    e envia notificação informando se a janela do quarto das crianças e/ou a janela
+    da sacada estão abertas
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_chuva_ocupacao
@@ -253,14 +261,15 @@
           \  or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}"
         aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
           %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
-          {% if j and p %}\n  Janela quarto crianças, Porta sacada\n{% elif j %}\n
-          \ Janela quarto crianças\n{% elif p %}\n  Porta sacada\n{% else %}\n  \n{%
+          {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n
+          \ Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else %}\n  \n{%
           endif %}"
     action: script.turn_on
   mode: single
 - id: '1767043454822'
   alias: Churrasqueira - Desligar ao parar movimento
-  description: Desliga as luzes da churrasqueira quando não detectar mais movimento
+  description: Dispara quando não há mais movimento na churrasqueira; se a luz estiver
+    ligada, desliga a luz
   triggers:
   - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_ocupacao
     to: 'off'
@@ -279,8 +288,9 @@
   mode: single
 - id: '1767044460202'
   alias: Escritório - Ligar ar condicionado (presença + porta fechada)
-  description: Liga o ar condicionado via cena Tuya quando houver presença e a porta
-    do escritório estiver fechada
+  description: Dispara ao detectar presença ou ao fechar a porta do escritório; só
+    executa se houver presença e a porta estiver fechada; então liga o ar condicionado
+    via cena
   triggers:
   - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
     to: 'on'
@@ -302,8 +312,8 @@
   mode: single
 - id: '1767044649808'
   alias: Escritório - Desligar ar condicionado sem presença
-  description: Desliga o ar condicionado via cena Tuya se não detectar presença por
-    10 minutos no escritório
+  description: Dispara quando não há presença no escritório por 10 minutos; desliga
+    o ar condicionado via cena
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
@@ -323,7 +333,9 @@
   mode: restart
 - id: '1767057340829'
   alias: Sala - Interruptor do ventilador controla cenas
-  description: Executa cenas ao ligar ou desligar o controlador do ventilador da sala
+  description: Dispara ao ligar ou desligar o interruptor do ventilador da sala;
+    ao ligar, ativa as cenas do ventilador e da luz; ao desligar, executa a cena de
+    desligar o ventilador
   triggers:
   - entity_id: switch.controlador_ventilador_da_sala
     to: 'on'
@@ -354,8 +366,8 @@
   mode: single
 - id: '1767059546302'
   alias: Sala - Sem movimento desliga o geral
-  description: Se não detectar movimento por 5 minutos, desliga o geral da sala (e
-    a automação do geral desliga o resto)
+  description: Dispara quando não há movimento na sala por 5 minutos; só executa se
+    o geral da sala estiver ligado; então desliga o geral
   triggers:
   - entity_id: binary_sensor.lnlinkha_e04b4101a27b0000000000009cac0000
     to: 'off'
@@ -372,7 +384,8 @@
   mode: restart
 - id: '1767134436970'
   alias: Churrasqueira - Ligar ao detectar movimento
-  description: Liga as luzes da churrasqueira ao detectar movimento
+  description: Dispara quando há movimento na churrasqueira; se a luz estiver desligada,
+    liga a luz
   triggers:
   - entity_id: binary_sensor.sensor_de_presenca_e_luminosidade_ocupacao
     to: 'on'
