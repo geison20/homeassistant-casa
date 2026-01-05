@@ -33,18 +33,9 @@
 !.gitignore
 
 ########################################
-# 🟢 ZIGBEE2MQTT (CONFIG APENAS)
+# 🔴 ZIGBEE2MQTT (IGNORAR TUDO)
 ########################################
-!zigbee2mqtt/
-!zigbee2mqtt/configuration.yaml
-!zigbee2mqtt/state.json
-
-########################################
-# 🔴 ZIGBEE2MQTT (NUNCA VERSIONAR)
-########################################
-zigbee2mqtt/log/
-zigbee2mqtt/database.db
-zigbee2mqtt/coordinator_backup.json
+zigbee2mqtt/
 
 ########################################
 # 🔴 HOME ASSISTANT – SEMPRE IGNORAR

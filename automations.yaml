@@ -309,25 +309,17 @@
     - binary_sensor.sensor_de_presenca_e_luminosidade_escritorio_ocupacao
     to:
     - 'off'
+    trigger: state
     for:
       hours: 0
       minutes: 10
       seconds: 0
-    trigger: state
-  conditions:
-  - condition: state
-    entity_id: climate.ar_condicionado_portatil_escritorio
-    state:
-    - cool
-    enabled: true
-  - condition: state
-    entity_id: switch.ar_condicionado_portatil_escritorio_power
-    state:
-    - 'on'
+  conditions: []
   actions:
   - target:
       entity_id: scene.desligar_ar_condicionado_midea
     action: scene.turn_on
+    data: {}
   mode: restart
 - id: '1767057340829'
   alias: Sala - Interruptor do ventilador controla cenas
