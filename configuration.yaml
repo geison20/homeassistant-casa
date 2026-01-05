@@ -11,8 +11,8 @@ template:
       - name: Janelas abertas
         unique_id: janelas_abertas
         state: >
-          {{ is_state('binary_sensor.janela_quarto_criancas_contact', 'on')
-             or is_state('binary_sensor.porta_da_sacada_contact', 'on') }}
+          {{ states('binary_sensor.janela_quarto_criancas_contact') in ['on', 'open']
+             or states('binary_sensor.porta_da_sacada_contact') in ['on', 'open'] }}
       - name: Chuva janelas abertas
         unique_id: chuva_janelas_abertas
         state: >

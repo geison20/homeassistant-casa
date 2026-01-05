@@ -173,8 +173,8 @@
       variables:
         alerta: "{{ is_state('binary_sensor.janelas_abertas', 'on') }}"
         repeticao: false
-        aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
-          %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
+        aberturas: "{% set j = states('binary_sensor.janela_quarto_criancas_contact') in ['on', 'open']
+          %} {% set p = states('binary_sensor.porta_da_sacada_contact') in ['on', 'open'] %}
           {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n
           \ Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else %}\n  \n{%
           endif %}"
@@ -201,8 +201,8 @@
     data:
       variables:
         alerta: "{{ is_state('binary_sensor.janelas_abertas', 'on') }}"
-        aberturas: "{% set j = is_state('binary_sensor.janela_quarto_criancas_contact','on')
-          %} {% set p = is_state('binary_sensor.porta_da_sacada_contact','on') %}
+        aberturas: "{% set j = states('binary_sensor.janela_quarto_criancas_contact') in ['on', 'open']
+          %} {% set p = states('binary_sensor.porta_da_sacada_contact') in ['on', 'open'] %}
           {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n
           \ Janela quarto crianças\n{% elif p %}\n  Janela da sacada\n{% else %}\n  \n{%
           endif %}"
