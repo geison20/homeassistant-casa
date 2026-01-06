@@ -152,27 +152,21 @@
   mode: single
 - id: '1767034599426'
   alias: Chuva - Notificar quando começar
-  description: Dispara quando começar a chover por 10 s e envia notificação indicando
-    se a janela do quarto das crianças e/ou a janela da sacada estão abertas; os
-    lembretes a cada 5 minutos são feitos pelo alerta de chuva
+  description: Dispara assim que o sensor indicar chuva e envia notificação confirmável
+    informando se a janela do quarto das crianças e/ou a janela da sacada estão abertas
   triggers:
   - entity_id:
     - binary_sensor.sensor_de_chuva_ocupacao
     to:
     - 'on'
-    for:
-      hours: 0
-      minutes: 0
-      seconds: 10
     trigger: state
   conditions: []
   actions:
   - target:
-      entity_id: script.notificacao_comecou_a_chover
+      entity_id: script.confirmable_notification
     data:
       variables:
         alerta: "{{ is_state('binary_sensor.janelas_abertas', 'on') }}"
-        repeticao: false
         aberturas: "{% set j = states('binary_sensor.janela_quarto_criancas_contact') in ['on', 'open']
           %} {% set p = states('binary_sensor.porta_da_sacada_contact') in ['on', 'open'] %}
           {% if j and p %}\n  Janela quarto crianças, Janela da sacada\n{% elif j %}\n

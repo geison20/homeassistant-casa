@@ -19,20 +19,6 @@ template:
           {{ is_state('binary_sensor.sensor_de_chuva_ocupacao', 'on')
              and is_state('binary_sensor.janelas_abertas', 'on') }}
 
-alert:
-  chuva_janelas_abertas:
-    name: Chuva com janelas abertas
-    entity_id: binary_sensor.chuva_janelas_abertas
-    state: "on"
-    repeat:
-      - 5
-    can_acknowledge: true
-    skip_first: true
-    notifiers:
-      - notify.notify
-    title: "Chuva em andamento - janelas abertas"
-    message: "Feche as janelas. Vou lembrar a cada 5 minutos enquanto estiver chovendo."
-
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
